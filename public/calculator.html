@@ -5933,6 +5933,128 @@ footer {
 #nyc-compact-taxes { display: none !important; }
 #nyc-tax-mismatch { display: none !important; }
 
+/* ===== Compact NYC info block — 3-col unified grid ===== */
+#nyc-info {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px 18px !important;
+  padding: 12px 14px !important;
+  background: #fafbfd !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  margin-top: 10px !important;
+  font-family: Arial, sans-serif !important;
+}
+
+/* Hide the redundant "Normalized Address" row */
+#nyc-info > .nyc-info-row:first-child { display: none !important; }
+
+/* Wrappers that don't add visual value — flatten them into the grid */
+.nyc-compact,
+.nyc-compact-grid {
+  display: contents !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* All data cells share the same compact style */
+#nyc-info > .nyc-info-row,
+.nyc-compact-cell {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  gap: 8px !important;
+  padding: 4px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 12px !important;
+}
+.nyc-info-label,
+.nyc-compact-label {
+  color: var(--ink-muted) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  font-family: Arial, sans-serif !important;
+}
+.nyc-info-value,
+.nyc-compact-value {
+  color: var(--ink) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  font-family: Arial, sans-serif !important;
+  text-align: right !important;
+}
+
+/* Things that should span the full row inside the grid */
+#nyc-rent-warning,
+#nyc-autofill-notice,
+#nyc-npv-box,
+#nyc-expanded,
+#nyc-info-status {
+  grid-column: 1 / -1 !important;
+}
+
+/* Bottom action row: NPV import + "Show more details" + source links all inline */
+#nyc-npv-import,
+#nyc-expand-btn,
+.nyc-info-links {
+  grid-column: 1 / -1 !important;
+  margin: 0 !important;
+}
+.nyc-info-links {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding-top: 4px !important;
+  border-top: 1px solid var(--border) !important;
+  margin-top: 4px !important;
+}
+.nyc-info-links .nyc-link {
+  padding: 5px 10px !important;
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  color: var(--ink) !important;
+  font-family: "Menlo", monospace !important;
+}
+.nyc-info-links .nyc-link:hover {
+  background: var(--paper, #f6f7fb) !important;
+  text-decoration: none !important;
+}
+/* Remove DHCR's special highlight — same look as the others */
+.nyc-link-dhcr {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  color: var(--ink) !important;
+}
+.nyc-link-dhcr:hover {
+  background: var(--paper, #f6f7fb) !important;
+  color: var(--ink) !important;
+}
+
+/* Show-more-details button — small inline */
+#nyc-expand-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+  width: fit-content !important;
+  font-family: Arial, sans-serif !important;
+  margin-top: 4px !important;
+}
+#nyc-expand-btn:hover { background: var(--paper, #f6f7fb) !important; }
+
 /* Collapse the NPV import box — show as a thin toggle, expand on click */
 #nyc-npv-import {
   border: 1px solid var(--border) !important;
