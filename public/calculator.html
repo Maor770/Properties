@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/styles.css">
 <script>
 /* html2pdf.js v0.10.1 - inlined for offline use */
 /*! For license information please see html2pdf.bundle.min.js.LICENSE.txt */
@@ -5586,24 +5587,329 @@ setTimeout(() => {
 
 </script>
 
+<style id="hub-theme">
+/* Hub theme override — match the rest of the app */
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --ink: #0f1623;
+  --ink-muted: #6b7480;
+  --accent: #2d6cdf;
+  --positive: #1f8a3d;
+  --negative: #c0392b;
+  --border: #e3e6ee;
+  --warning-bg: #fff8e8;
+}
+html, body {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif !important;
+  background: var(--bg);
+  color: var(--ink);
+}
+body {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  min-height: 100vh;
+}
+/* Hide the calc's old branding mark */
+.bh-mark { display: none !important; }
+
+/* Container for calc content (under the topbar) */
+.toolbar,
+.nyc-info-container,
+.summary,
+.section,
+.results,
+.comparison-section,
+.stress-section,
+footer,
+#print-host,
+.hub-bar {
+  max-width: 1100px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.toolbar {
+  padding: 12px 24px 0;
+  justify-content: flex-end;
+  gap: 8px;
+}
+/* Hide calc's redundant nav buttons — Hub nav handles these */
+#btn-properties, #btn-new { display: none !important; }
+/* PDF button styled as Hub btn */
+.tool-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--navy, #1A2332); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: Arial, sans-serif !important;
+  text-transform: none !important; letter-spacing: 0 !important;
+}
+.tool-btn:hover { background: #243149; }
+.tool-btn.secondary { background: #fff; color: #0f1623; border: 1px solid var(--border); }
+
+/* Section cards */
+.section, .nyc-info-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 14px auto !important;
+  box-shadow: 0 1px 2px rgba(15,22,35,0.04), 0 4px 16px rgba(15,22,35,0.06);
+}
+.section-title {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.section-title .num {
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Menlo", monospace;
+}
+
+/* Summary cards row */
+.summary {
+  margin: 18px auto 6px !important;
+  padding: 0 24px;
+}
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.summary-cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px rgba(15,22,35,0.04), 0 4px 16px rgba(15,22,35,0.06);
+}
+.summary-cell .label {
+  color: var(--ink-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+.summary-cell .value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+  color: var(--navy, #1A2332);
+}
+.summary-cell.positive .value { color: var(--positive); }
+.summary-cell.negative .value { color: var(--negative); }
+
+/* Input rows */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.input-row:last-child { border-bottom: none; }
+.input-row label {
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.input-row label .hint {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+  font-weight: 400;
+}
+input[type=number], input[type=text], .address-input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: Arial, sans-serif !important;
+  font-size: 14px;
+  color: var(--ink);
+  background: #fff;
+}
+input[type=number]:focus, input[type=text]:focus, .address-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45,108,223,0.12);
+}
+.suffix-wrap {
+  display: flex; align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+.suffix-wrap .suffix {
+  padding: 0 10px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  background: #fafbfd;
+  border-right: 1px solid var(--border);
+}
+.suffix-wrap input { border: none !important; border-radius: 0 !important; }
+.suffix-wrap input:focus { box-shadow: none !important; }
+
+/* Results section */
+.results {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 14px auto !important;
+  box-shadow: 0 1px 2px rgba(15,22,35,0.04), 0 4px 16px rgba(15,22,35,0.06);
+}
+.result-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13px;
+}
+.result-row:last-child { border-bottom: none; }
+.result-row .label { color: var(--ink-muted); font-weight: 500; }
+.result-row .value { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Comparison table */
+.comparison-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 14px auto !important;
+  box-shadow: 0 1px 2px rgba(15,22,35,0.04), 0 4px 16px rgba(15,22,35,0.06);
+}
+.comparison-table { width: 100%; }
+.comparison-header, .comparison-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.comparison-header { font-weight: 700; color: var(--ink-muted); text-transform: uppercase; font-size: 11px; }
+.comparison-row .comp-label { color: var(--ink-muted); font-weight: 500; }
+.comparison-row .comp-col { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Stress tabs */
+.stress-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 14px auto !important;
+  box-shadow: 0 1px 2px rgba(15,22,35,0.04), 0 4px 16px rgba(15,22,35,0.06);
+}
+.stress-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.stress-tab {
+  background: #fff; color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px; font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  font-family: Arial, sans-serif !important;
+}
+.stress-tab:hover { background: var(--bg); }
+.stress-tab.active { background: var(--navy, #1A2332); color: #fff; border-color: var(--navy, #1A2332); }
+.stress-result {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+.stress-cell {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px;
+}
+.stress-cell .label { color: var(--ink-muted); font-size: 11px; text-transform: uppercase; font-weight: 600; }
+.stress-cell .value { font-size: 18px; font-weight: 700; color: var(--ink); margin-top: 3px; }
+
+/* Footer text */
+footer {
+  text-align: center; color: var(--ink-muted); font-size: 12px;
+  padding: 24px;
+}
+
+/* NYC info area */
+.nyc-info-container, .nyc-info {
+  font-size: 13px;
+}
+.nyc-info-row {
+  display: flex; justify-content: space-between; padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.nyc-info-row:last-child { border-bottom: none; }
+.nyc-info-label { color: var(--ink-muted); font-weight: 500; }
+.nyc-info-value { color: var(--ink); font-weight: 600; }
+
+/* Save status bar (the bar we inject) */
+.hub-bar {
+  background: #1A2332; color: #fff;
+  padding: 8px 24px; font-family: Arial, sans-serif;
+  display: flex; justify-content: center; align-items: center;
+  gap: 14px; flex-wrap: wrap;
+  font-size: 12px;
+  max-width: none !important; margin: 0 !important;
+}
+.hub-bar a { color: #cbd6ec; text-decoration: none; }
+.hub-bar a:hover { color: #fff; text-decoration: underline; }
+
+/* Modal styling (saved properties modal etc.) */
+.modal-overlay { background: rgba(15,22,35,0.55); }
+.modal {
+  background: #fff; border-radius: 10px; border: 1px solid var(--border);
+  box-shadow: 0 12px 40px rgba(15,22,35,0.25);
+}
+.modal-header h2 { font-family: Arial, sans-serif; font-weight: 700; font-size: 18px; color: var(--ink); }
+
+@media (max-width: 800px) {
+  .input-row { grid-template-columns: 1fr; gap: 6px; }
+}
+</style>
+
 <script>
 (function () {
-  const id = new URL(window.location.href).searchParams.get('id');
-  if (!id) return;
-
-  const HUB_API = '/api/properties/' + encodeURIComponent(id);
+  let propertyId = new URL(window.location.href).searchParams.get('id');
+  const isNew = !propertyId;
   const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
   let existingEnrichment = {};
   let saveTimer = null;
   let saving = false;
-  let loaded = false;
+  let ready = false;
 
+  // Hub topbar
+  const topbar = document.createElement('header');
+  topbar.className = 'topbar';
+  topbar.innerHTML =
+    '<h1>NYC Properties Hub</h1>' +
+    '<nav>' +
+      '<a href="/">Dashboard</a>' +
+      '<a href="/properties.html">Properties</a>' +
+      '<a href="/calculator.html" class="active">+ Add Property</a>' +
+    '</nav>';
+  document.body.insertBefore(topbar, document.body.firstChild);
+
+  // Save-status sub-bar
   const banner = document.createElement('div');
-  banner.style.cssText = 'background:#1A2332;color:#fff;padding:10px 20px;text-align:center;font-family:Arial,sans-serif;direction:ltr;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;';
-  banner.innerHTML = '<a href="/properties.html" style="color:#fff;text-decoration:underline;">← All properties</a><span style="opacity:.4;">|</span><a href="/property.html?id=' + id + '" style="color:#fff;text-decoration:underline;">Property summary &amp; files</a><span style="opacity:.4;">|</span><span id="hub-save-status">Loading…</span>';
-  document.body.insertBefore(banner, document.body.firstChild);
-  const statusEl = document.getElementById('hub-save-status');
-  const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg; };
+  banner.className = 'hub-bar';
+  function renderBanner() {
+    const summary = propertyId
+      ? '<a href="/property.html?id=' + propertyId + '">Property summary &amp; files</a><span style="opacity:.4;">|</span>'
+      : '';
+    banner.innerHTML = summary +
+      '<span id="hub-save-status">' + (propertyId ? 'Loading…' : 'New property — enter an address to save') + '</span>';
+  }
+  renderBanner();
+  topbar.insertAdjacentElement('afterend', banner);
+  const setStatus = (msg) => { const el = document.getElementById('hub-save-status'); if (el) el.textContent = msg; };
 
   function setVal(elemId, val) {
     if (val === null || val === undefined || val === '') return;
@@ -5611,12 +5917,49 @@ setTimeout(() => {
     if (el && el.value !== String(val)) el.value = val;
   }
 
-  async function loadProperty() {
+  function buildPayload() {
+    const addrEl = document.getElementById('address');
+    const addr = (addrEl && addrEl.value || '').trim();
+    if (!addr) return null;
+
+    const calcInputs = {};
+    CALC_FIELDS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) calcInputs[k] = el.value;
+    });
+
+    let r = null, mine = null;
+    try {
+      if (typeof calculate === 'function') r = calculate();
+      if (r && typeof calculateMyPrice === 'function') mine = calculateMyPrice(r);
+    } catch (_) {}
+
+    const payload = {
+      address: addr,
+      units: calcInputs.units ? parseInt(calcInputs.units, 10) : null,
+      asking_price: calcInputs.price ? parseFloat(calcInputs.price) : null,
+    };
+    if (r) {
+      if (isFinite(r.noi)) payload.annual_noi = Math.round(r.noi);
+      if (isFinite(r.cashFlow)) payload.annual_cash_flow = Math.round(r.cashFlow);
+      if (isFinite(r.coc)) payload.coc_return = +r.coc.toFixed(2);
+      const annualDebt = r.annualDebt || 0;
+      if (annualDebt > 0) {
+        const actualDSCR = r.noi / annualDebt;
+        if (isFinite(actualDSCR)) payload.dscr = +actualDSCR.toFixed(3);
+      }
+    }
+    if (mine && isFinite(mine.price)) payload.my_max_price = Math.round(mine.price);
+    payload.enrichment_json = JSON.stringify({ ...existingEnrichment, calculator: calcInputs });
+    return payload;
+  }
+
+  async function loadExisting() {
     setStatus('Loading…');
-    const res = await fetch(HUB_API);
-    if (!res.ok) { setStatus('Load failed'); return; }
+    const res = await fetch('/api/properties/' + encodeURIComponent(propertyId));
+    if (!res.ok) { setStatus('Load failed'); return false; }
     const { property } = await res.json();
-    if (!property) { setStatus('Not found'); return; }
+    if (!property) { setStatus('Not found'); return false; }
 
     if (property.enrichment_json) {
       try { existingEnrichment = JSON.parse(property.enrichment_json) || {}; } catch (_) { existingEnrichment = {}; }
@@ -5636,72 +5979,69 @@ setTimeout(() => {
     if (property.bbl && typeof loadCityData === 'function') {
       try { loadCityData(property.bbl, null); } catch (_) {}
     }
-
-    loaded = true;
     setStatus('Saved');
+    return true;
+  }
 
+  function attachListeners() {
     document.querySelectorAll('input, select, textarea').forEach(el => {
       el.addEventListener('input', scheduleSave);
       el.addEventListener('change', scheduleSave);
     });
+    ready = true;
   }
 
   function scheduleSave() {
-    if (!loaded) return;
+    if (!ready) return;
     clearTimeout(saveTimer);
     setStatus('Saving…');
-    saveTimer = setTimeout(saveToHub, 700);
+    saveTimer = setTimeout(syncToHub, 700);
   }
 
-  async function saveToHub() {
+  async function syncToHub() {
     if (saving) { scheduleSave(); return; }
+    const payload = buildPayload();
+    if (!payload) { setStatus('Enter an address to save'); return; }
+
     saving = true;
     try {
-      const addrEl = document.getElementById('address');
-      const addr = (addrEl && addrEl.value || '').trim();
-      if (!addr) { setStatus('Address required'); saving = false; return; }
-
-      const calcInputs = {};
-      CALC_FIELDS.forEach(k => {
-        const el = document.getElementById(k);
-        if (el) calcInputs[k] = el.value;
-      });
-
-      let r = null, mine = null;
-      try {
-        if (typeof calculate === 'function') r = calculate();
-        if (r && typeof calculateMyPrice === 'function') mine = calculateMyPrice(r);
-      } catch (_) {}
-
-      const payload = {
-        address: addr,
-        units: calcInputs.units ? parseInt(calcInputs.units, 10) : null,
-        asking_price: calcInputs.price ? parseFloat(calcInputs.price) : null,
-      };
-      if (r) {
-        if (isFinite(r.noi)) payload.annual_noi = Math.round(r.noi);
-        if (isFinite(r.cashFlow)) payload.annual_cash_flow = Math.round(r.cashFlow);
-        if (isFinite(r.coc)) payload.coc_return = +r.coc.toFixed(2);
-        const annualDebt = r.annualDebt || 0;
-        if (annualDebt > 0) {
-          const actualDSCR = r.noi / annualDebt;
-          if (isFinite(actualDSCR)) payload.dscr = +actualDSCR.toFixed(3);
+      let res, created;
+      if (!propertyId) {
+        // First save -> CREATE
+        res = await fetch('/api/properties', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.text();
+          setStatus('Save failed');
+          console.warn('Hub create failed:', err);
+          return;
         }
-      }
-      if (mine && isFinite(mine.price)) payload.my_max_price = Math.round(mine.price);
-
-      payload.enrichment_json = JSON.stringify({ ...existingEnrichment, calculator: calcInputs });
-
-      const res = await fetch(HUB_API, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const err = await res.text();
-        setStatus('Save failed');
-        console.warn('Hub save failed:', err);
+        ({ property: created } = await res.json());
+        propertyId = String(created.id);
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', propertyId);
+        window.history.replaceState({}, '', url.toString());
+        renderBanner();
+        if (created.enrichment_json) {
+          try { existingEnrichment = JSON.parse(created.enrichment_json) || {}; } catch (_) {}
+        }
+        setStatus('Saved · ' + new Date().toLocaleTimeString());
       } else {
+        // Subsequent saves -> UPDATE
+        res = await fetch('/api/properties/' + encodeURIComponent(propertyId), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.text();
+          setStatus('Save failed');
+          console.warn('Hub update failed:', err);
+          return;
+        }
         const { property: updated } = await res.json().catch(() => ({}));
         if (updated && updated.enrichment_json) {
           try { existingEnrichment = JSON.parse(updated.enrichment_json) || {}; } catch (_) {}
@@ -5716,7 +6056,12 @@ setTimeout(() => {
     }
   }
 
-  loadProperty().catch(e => { setStatus('Load error'); console.warn(e); });
+  (async () => {
+    if (propertyId) {
+      await loadExisting();
+    }
+    attachListeners();
+  })().catch(e => { setStatus('Init error'); console.warn(e); });
 })();
 </script>
 

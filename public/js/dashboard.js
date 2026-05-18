@@ -62,7 +62,7 @@ function render() {
   ].join('');
 
   if (filtered.length === 0) {
-    cardsEl.innerHTML = `<div class="empty card" style="grid-column: 1/-1;">No properties match. <a href="/add.html">Add your first property</a>.</div>`;
+    cardsEl.innerHTML = `<div class="empty card" style="grid-column: 1/-1;">No properties match. <a href="/calculator.html">Add your first property</a>.</div>`;
     return;
   }
 

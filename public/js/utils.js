@@ -99,8 +99,7 @@ export function renderTopbar(active) {
   const nav = [
     { href: '/', label: 'Dashboard', key: 'dashboard' },
     { href: '/properties.html', label: 'Properties', key: 'properties' },
-    { href: '/add.html', label: 'Add Property', key: 'add' },
-    { href: '/calculator.html', label: 'DSCR Calculator', key: 'calculator' },
+    { href: '/calculator.html', label: '+ Add Property', key: 'add' },
   ];
   return `
     <header class="topbar">
