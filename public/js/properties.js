@@ -57,7 +57,7 @@ function row(p) {
     : '-';
   return `
     <tr>
-      <td class="num"><span class="prop-ref">#${p.id}</span></td>
+      <td class="num"><span class="prop-ref">${p.id}</span></td>
       <td><span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span></td>
       <td><a href="/property.html?id=${p.id}" title="${escapeHtml(p.address)}">${escapeHtml(fmtAddress(p.address))}</a></td>
       <td class="between">${escapeHtml(p.cross_streets || '–')}</td>

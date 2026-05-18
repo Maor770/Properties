@@ -87,7 +87,7 @@ function propCard(p) {
     <div class="prop-card">
       <div class="card-head">
         <div class="card-title">
-          <h3 title="${escapeHtml(p.address)}"><span class="prop-ref">#${p.id}</span> ${escapeHtml(fmtAddress(p.address))}</h3>
+          <h3 title="${escapeHtml(p.address)}"><span class="prop-ref">${p.id}</span> ${escapeHtml(fmtAddress(p.address))}</h3>
           ${subtitle ? `<div class="card-sub">${escapeHtml(subtitle)}</div>` : ''}
         </div>
         <span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span>
