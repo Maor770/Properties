@@ -5929,6 +5929,10 @@ footer {
 .nyc-info-label { color: var(--ink-muted); font-weight: 500; }
 .nyc-info-value { color: var(--ink); font-weight: 600; }
 
+/* Hide the unreliable PLUTO tax estimate row and its mismatch warning */
+#nyc-compact-taxes { display: none !important; }
+#nyc-tax-mismatch { display: none !important; }
+
 /* Collapse the NPV import box — show as a thin toggle, expand on click */
 #nyc-npv-import {
   border: 1px solid var(--border) !important;
