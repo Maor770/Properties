@@ -5997,20 +5997,35 @@ footer {
   grid-column: 1 / -1 !important;
 }
 
-/* Bottom action row: NPV import + "Show more details" + source links all inline */
-#nyc-npv-import,
-#nyc-expand-btn,
-.nyc-info-links {
+/* Bottom action row: NPV import + "Show more details" + source links all in ONE flex line */
+.nyc-actions-row {
   grid-column: 1 / -1 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding-top: 8px !important;
+  border-top: 1px solid var(--border) !important;
+  margin-top: 4px !important;
+}
+.nyc-actions-row #nyc-npv-import {
+  flex: 0 1 auto !important;
+  margin: 0 !important;
+  min-width: 240px !important;
+}
+.nyc-actions-row #nyc-expand-btn {
+  flex: 0 0 auto !important;
   margin: 0 !important;
 }
-.nyc-info-links {
+.nyc-actions-row .nyc-info-links {
+  flex: 1 1 auto !important;
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 6px !important;
-  padding-top: 4px !important;
-  border-top: 1px solid var(--border) !important;
-  margin-top: 4px !important;
+  justify-content: flex-end !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 .nyc-info-links .nyc-link {
   padding: 5px 10px !important;
@@ -6321,6 +6336,29 @@ footer {
     const box = document.getElementById('nyc-npv-import');
     if (box) box.classList.toggle('expanded');
   });
+
+  // Group the bottom action items (NPV import + Show more + source links)
+  // into a single flex row inside the NYC info grid
+  function groupNYCActions() {
+    const info = document.getElementById('nyc-info');
+    if (!info || info.querySelector('.nyc-actions-row')) return;
+    const npv = document.getElementById('nyc-npv-import');
+    const expand = document.getElementById('nyc-expand-btn');
+    const links = info.querySelector('.nyc-info-links');
+    if (!npv && !expand && !links) return;
+    const row = document.createElement('div');
+    row.className = 'nyc-actions-row';
+    // Insert before whatever comes first
+    const anchor = npv || expand || links;
+    info.insertBefore(row, anchor);
+    [npv, expand, links].forEach(el => { if (el) row.appendChild(el); });
+  }
+  groupNYCActions();
+  // Re-group whenever NYC info re-renders
+  new MutationObserver(() => groupNYCActions()).observe(
+    document.getElementById('nyc-info') || document.body,
+    { childList: true, subtree: false }
+  );
 
   (async () => {
     if (propertyId) {
