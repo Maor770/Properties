@@ -1994,6 +1994,17 @@ footer {
   <div class="eyebrow" data-i18n="eyebrow">DSCR Underwriting</div>
   <h1 data-i18n="title">מחשבון רכישת בניין</h1>
   <input type="text" id="address" placeholder="Property address (NYC)" class="address-input">
+  <div class="rent-stab-bar">
+    <label for="rent_stabilized">Rent Stabilized</label>
+    <select id="rent_stabilized">
+      <option value="Not Checked">Not Checked</option>
+      <option value="No">No</option>
+      <option value="Possible">Possible</option>
+      <option value="Likely">Likely</option>
+      <option value="Confirmed">Confirmed</option>
+    </select>
+    <span class="rent-stab-hint">Buildings with 6+ units pre-1974 are typically stabilized</span>
+  </div>
   <div id="nyc-info" class="nyc-info" style="display:none;">
     <div class="nyc-info-row">
       <span class="nyc-info-label" data-i18n="nyc_normalized">כתובת מנורמלת</span>
@@ -5690,6 +5701,32 @@ footer,
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 3px rgba(45,108,223,0.12) !important;
 }
+.rent-stab-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+.rent-stab-bar label {
+  font-weight: 600;
+  color: var(--ink);
+}
+.rent-stab-bar select {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  background: #fff;
+  color: var(--ink);
+}
+.rent-stab-bar .rent-stab-hint {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
 /* Hide calc's redundant nav buttons — Hub nav handles these */
 #btn-properties, #btn-new { display: none !important; }
 /* PDF button styled as Hub btn */
@@ -6230,11 +6267,13 @@ footer {
       if (r && typeof calculateMyPrice === 'function') mine = calculateMyPrice(r);
     } catch (_) {}
 
+    const stabEl = document.getElementById('rent_stabilized');
     const payload = {
       address: addr,
       units: calcInputs.units ? parseInt(calcInputs.units, 10) : null,
       asking_price: calcInputs.price ? parseFloat(calcInputs.price) : null,
     };
+    if (stabEl && stabEl.value) payload.rent_stabilized = stabEl.value;
     if (r) {
       if (isFinite(r.noi)) payload.annual_noi = Math.round(r.noi);
       if (isFinite(r.cashFlow)) payload.annual_cash_flow = Math.round(r.cashFlow);
@@ -6264,6 +6303,7 @@ footer {
     setVal('address', property.address);
     setVal('units', property.units);
     setVal('price', property.asking_price);
+    setVal('rent_stabilized', property.rent_stabilized);
 
     const calc = existingEnrichment.calculator || {};
     CALC_FIELDS.forEach(k => setVal(k, calc[k]));
