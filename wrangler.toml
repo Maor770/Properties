@@ -2,16 +2,14 @@ name = "nyc-properties-hub"
 compatibility_date = "2024-09-01"
 pages_build_output_dir = "public"
 
-# NOTE: For Cloudflare Pages, configure these bindings via the Cloudflare Dashboard,
-# NOT in this file (wrangler.toml bindings cause "Invalid database UUID" errors on Pages):
-#
-#   Settings → Functions → D1 database bindings:
-#     Variable name: DB    → Database: properties-hub
-#
-#   Settings → Functions → R2 bucket bindings:
-#     Variable name: FILES → Bucket: properties-hub-files
-#
-#   Settings → Environment variables (Production):
-#     FILES_PUBLIC_BASE = https://pub-XXXXXXXX.r2.dev   (or your R2 custom domain)
-#
-# For local dev only (`npm run dev`), bindings are passed via CLI flags in package.json.
+[[d1_databases]]
+binding = "DB"
+database_name = "properties-hub"
+database_id = "86dff9c1-0603-40b1-ac04-e81340fe83b9"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "properties-hub-files"
+
+[vars]
+FILES_PUBLIC_BASE = "https://pub-4f7ef8819e6641dfa6ff1d93f52051d0.r2.dev"
