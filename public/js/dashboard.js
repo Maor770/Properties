@@ -74,29 +74,57 @@ function kpi(label, value) {
 }
 
 function propCard(p) {
-  const gapPct = p.gap_pct !== null && p.gap_pct !== undefined ? (p.gap_pct * 100).toFixed(1) + '%' : '-';
+  const gapPct = p.gap_pct !== null && p.gap_pct !== undefined ? (p.gap_pct * 100).toFixed(1) + '%' : '–';
+  const subtitleParts = [];
+  if (p.borough) subtitleParts.push(p.borough);
+  if (p.units) subtitleParts.push(p.units + ' units');
+  if (p.year_built) subtitleParts.push('built ' + p.year_built);
+  const subtitle = subtitleParts.join(' · ');
+  const intakeLink = p.intake_file
+    ? `<a class="card-intake" href="${escapeHtml(p.intake_file.public_url)}" target="_blank" rel="noopener" title="${escapeHtml(p.intake_file.filename)}">📎 ${escapeHtml(p.intake_file.filename.length > 24 ? p.intake_file.filename.slice(0, 22) + '…' : p.intake_file.filename)}</a>`
+    : '';
   return `
     <div class="prop-card">
-      <div class="row">
-        <h3>${escapeHtml(p.address)}</h3>
+      <div class="card-head">
+        <div class="card-title">
+          <h3>${escapeHtml(p.address)}</h3>
+          ${subtitle ? `<div class="card-sub">${escapeHtml(subtitle)}</div>` : ''}
+        </div>
         <span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span>
       </div>
-      <div class="addr">${escapeHtml(p.borough || '')} ${p.units ? '• ' + p.units + ' units' : ''} ${p.year_built ? '• built ' + p.year_built : ''}</div>
-      <div class="metrics">
-        <div><span>Asking</span><span>${fmtCurrency(p.asking_price)}</span></div>
-        <div><span>My Max</span><span>${fmtCurrency(p.my_max_price)}</span></div>
-        <div><span>Gap</span><span>${gapPct}</span></div>
-        <div><span>DSCR</span><span>${fmtRatio(p.dscr)}</span></div>
-        <div><span>Annual NOI</span><span>${fmtCurrency(p.annual_noi)}</span></div>
-        <div><span>Cash Flow</span><span>${fmtCurrency(p.annual_cash_flow)}</span></div>
-        <div><span>CoC</span><span>${p.coc_return ? Number(p.coc_return).toFixed(1) + '%' : '-'}</span></div>
-        <div><span>Rent Stab</span><span><span class="badge ${stabClass(p.rent_stabilized)}">${escapeHtml(p.rent_stabilized || 'Not Checked')}</span></span></div>
+
+      <div class="price-row">
+        <div class="price-cell">
+          <div class="cell-label">Asking</div>
+          <div class="cell-val">${fmtCurrency(p.asking_price)}</div>
+        </div>
+        <div class="price-cell">
+          <div class="cell-label">My Max</div>
+          <div class="cell-val">${fmtCurrency(p.my_max_price)}</div>
+        </div>
+        <div class="price-cell">
+          <div class="cell-label">Gap</div>
+          <div class="cell-val">${gapPct}</div>
+        </div>
       </div>
-      ${p.next_step ? `<div style="font-size:13px;"><strong>Next:</strong> ${escapeHtml(p.next_step)}</div>` : ''}
-      <div class="actions">
-        <a class="btn small secondary" href="/property.html?id=${p.id}">Open</a>
-        <a class="btn small secondary" href="/calculator.html?id=${p.id}">Analyze</a>
+
+      <div class="metric-row">
+        <div class="metric-cell"><div class="cell-label">NOI</div><div class="cell-val">${fmtCurrency(p.annual_noi)}</div></div>
+        <div class="metric-cell"><div class="cell-label">Cash Flow</div><div class="cell-val">${fmtCurrency(p.annual_cash_flow)}</div></div>
+        <div class="metric-cell"><div class="cell-label">DSCR</div><div class="cell-val">${fmtRatio(p.dscr)}</div></div>
+        <div class="metric-cell"><div class="cell-label">CoC</div><div class="cell-val">${p.coc_return ? Number(p.coc_return).toFixed(1) + '%' : '–'}</div></div>
       </div>
+
+      <div class="card-foot">
+        <div class="card-foot-left">
+          <span class="badge ${stabClass(p.rent_stabilized)}">${escapeHtml(p.rent_stabilized || 'Not Checked')}</span>
+          ${intakeLink}
+        </div>
+        <div class="card-foot-right">
+          <a class="btn small" href="/calculator.html?id=${p.id}">Open</a>
+        </div>
+      </div>
+      ${p.next_step ? `<div class="card-next"><strong>Next:</strong> ${escapeHtml(p.next_step)}</div>` : ''}
     </div>
   `;
 }

@@ -18,6 +18,30 @@ export async function onRequestGet({ env, request }) {
   const sql = `SELECT * FROM properties${where.length ? ' WHERE ' + where.join(' AND ') : ''} ORDER BY created_at DESC`;
   const stmt = binds.length ? env.DB.prepare(sql).bind(...binds) : env.DB.prepare(sql);
   const { results } = await stmt.all();
+
+  // Attach the intake file: the earliest-uploaded file per property
+  // (the document originally provided when the property was added).
+  if (results.length) {
+    const ids = results.map(r => r.id);
+    const placeholders = ids.map(() => '?').join(',');
+    const filesQuery = await env.DB.prepare(
+      `SELECT pf.property_id, pf.filename, pf.public_url, pf.mime_type
+       FROM property_files pf
+       INNER JOIN (
+         SELECT property_id, MIN(uploaded_at) AS first_at
+         FROM property_files
+         WHERE property_id IN (${placeholders})
+         GROUP BY property_id
+       ) m ON pf.property_id = m.property_id AND pf.uploaded_at = m.first_at`
+    ).bind(...ids).all();
+    const firstByProp = {};
+    for (const f of filesQuery.results) firstByProp[f.property_id] = f;
+    for (const r of results) {
+      const f = firstByProp[r.id];
+      r.intake_file = f ? { filename: f.filename, public_url: f.public_url, mime_type: f.mime_type } : null;
+    }
+  }
+
   for (const r of results) {
     r.gap_pct = computeGapPct(r.asking_price, r.my_max_price);
   }
