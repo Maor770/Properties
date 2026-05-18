@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Properties Hub — Properties Table</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="topbar"></div>
+  <main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2>Properties (19-Column Table)</h2>
+      <div style="display:flex; gap:8px;">
+        <a class="btn secondary" href="/api/export?format=csv">Export to Google Sheets (CSV)</a>
+        <a class="btn" href="/add.html">+ Add Property</a>
+      </div>
+    </div>
+
+    <div class="filters card" style="padding:14px;">
+      <input type="search" id="search" placeholder="Search address, BBL, notes...">
+      <select id="filter-status">
+        <option value="">All statuses</option>
+      </select>
+      <select id="filter-borough">
+        <option value="">All boroughs</option>
+      </select>
+      <button class="btn secondary" id="clear-filters" type="button">Clear</button>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="props" id="props-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Address</th>
+            <th>Next Step</th>
+            <th class="num">My Max Price</th>
+            <th class="num">Asking Price</th>
+            <th class="num">Gap %</th>
+            <th class="num">Units</th>
+            <th class="num">Annual NOI</th>
+            <th class="num">DSCR</th>
+            <th class="num">Cash Flow</th>
+            <th class="num">CoC %</th>
+            <th>Rent Stabilized</th>
+            <th>BBL</th>
+            <th>Borough</th>
+            <th class="num">Year Built</th>
+            <th class="num">Last Offer</th>
+            <th>Notes</th>
+            <th>Last Updated</th>
+            <th>Files</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="mini-log" style="margin-top: 16px;">
+      Tip: open Google Sheets → File → Import → Upload the CSV. Or use Sheets' "IMPORTDATA" with the URL <code>https://&lt;your-domain&gt;/api/export?format=csv</code> (requires the site to be publicly reachable).
+    </p>
+  </main>
+
+  <script type="module" src="/js/properties.js"></script>
+</body>
+</html>

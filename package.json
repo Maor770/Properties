@@ -1,0 +1,15 @@
+{
+  "name": "nyc-properties-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NYC Properties Hub - Portfolio Management System",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1=DB --r2=FILES --compatibility-date=2024-09-01",
+    "deploy": "wrangler pages deploy public",
+    "db:init": "wrangler d1 execute properties-hub --file=./schema.sql --remote",
+    "db:init:local": "wrangler d1 execute properties-hub --file=./schema.sql --local"
+  },
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  }
+}

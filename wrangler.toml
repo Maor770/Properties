@@ -1,0 +1,18 @@
+name = "nyc-properties-hub"
+compatibility_date = "2024-09-01"
+pages_build_output_dir = "public"
+
+# D1 database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "properties-hub"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# R2 bucket binding for property files
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "properties-hub-files"
+
+# Public URL for R2 (after enabling public access on the bucket)
+# Set this in the Cloudflare dashboard as an environment variable:
+#   FILES_PUBLIC_BASE = "https://pub-XXXXXXXX.r2.dev"  (or your custom domain)

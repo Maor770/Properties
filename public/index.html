@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Properties Hub — Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="topbar"></div>
+  <main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2>Dashboard</h2>
+      <div style="display:flex; gap:8px;">
+        <a class="btn secondary" href="/api/export?format=csv">Export to Google Sheets (CSV)</a>
+        <a class="btn" href="/add.html">+ Add Property</a>
+      </div>
+    </div>
+
+    <div class="kpi-row" id="kpi-row"></div>
+
+    <div class="filters card" style="padding: 14px;">
+      <input type="search" id="search" placeholder="Search address, BBL, notes...">
+      <select id="filter-status">
+        <option value="">All statuses</option>
+      </select>
+      <select id="filter-borough">
+        <option value="">All boroughs</option>
+      </select>
+      <button class="btn secondary" id="clear-filters" type="button">Clear</button>
+    </div>
+
+    <div id="cards" class="cards-grid"></div>
+  </main>
+
+  <script type="module" src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Properties Hub — Add Property</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="topbar"></div>
+  <main>
+    <h2>Add Property</h2>
+
+    <div class="card" style="margin-bottom:18px;">
+      <h3>Step 1 — NYC Lookup</h3>
+      <p style="color: var(--muted); margin-top:0; font-size:13px;">
+        Enter the property address. We'll call NYC GeoSearch + PLUTO + DOF and pre-fill fields below.
+      </p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" id="lookup-address" placeholder="e.g. 1277 Lincoln Place, Brooklyn"
+               style="flex:1; min-width:280px; padding:10px 12px; border:1px solid var(--border); border-radius:8px;">
+        <button class="btn" id="lookup-btn" type="button">Lookup</button>
+      </div>
+      <div id="lookup-result" style="margin-top:14px; display:none;"></div>
+    </div>
+
+    <form id="prop-form" class="card">
+      <h3>Step 2 — Review & Save</h3>
+      <div class="form-grid">
+        <label>Status
+          <select name="status" id="status-select" required></select>
+        </label>
+        <label>Address
+          <input type="text" name="address" id="address-in" required>
+        </label>
+
+        <label>Asking Price ($)
+          <input type="number" name="asking_price" step="1000" min="0">
+        </label>
+        <label>My Max Price ($)
+          <input type="number" name="my_max_price" step="1000" min="0">
+        </label>
+
+        <label>Units
+          <input type="number" name="units" min="0" step="1">
+        </label>
+        <label>Year Built
+          <input type="number" name="year_built" min="1800" max="2100" step="1">
+        </label>
+
+        <label>Annual NOI ($)
+          <input type="number" name="annual_noi" step="100">
+        </label>
+        <label>DSCR
+          <input type="number" name="dscr" step="0.01" min="0">
+        </label>
+
+        <label>Annual Cash Flow ($)
+          <input type="number" name="annual_cash_flow" step="100">
+        </label>
+        <label>CoC Return (%)
+          <input type="number" name="coc_return" step="0.1">
+        </label>
+
+        <label>Rent Stabilized
+          <select name="rent_stabilized" id="stab-select"></select>
+        </label>
+        <label>Borough
+          <select name="borough" id="borough-select">
+            <option value="">—</option>
+          </select>
+        </label>
+
+        <label>BBL (10 digits)
+          <input type="text" name="bbl" maxlength="10" pattern="\d{10}">
+        </label>
+        <label>Last Offer ($)
+          <input type="number" name="last_offer" step="1000" min="0">
+        </label>
+
+        <label class="full">Next Step
+          <input type="text" name="next_step" placeholder="e.g. Schedule inspection, Send offer, Await counter...">
+        </label>
+        <label class="full">Notes
+          <textarea name="notes" placeholder="Free-text notes about the property..."></textarea>
+        </label>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+        <a class="btn secondary" href="/">Cancel</a>
+        <button class="btn" type="submit">Save Property</button>
+      </div>
+    </form>
+  </main>
+
+  <script type="module" src="/js/add.js"></script>
+</body>
+</html>
