@@ -41,7 +41,7 @@ function render() {
         </div>
       </div>
       <div style="display:flex; gap:8px;">
-        <a class="btn" href="/calculator.html?id=${p.id}">Open in DSCR Calculator</a>
+        <a class="btn" href="/calculator.html?id=${p.id}">Edit in Calculator</a>
         <button class="btn danger" id="delete-btn" type="button">Delete</button>
       </div>
     </div>
@@ -177,7 +177,7 @@ function bind() {
   });
 
   document.getElementById('edit-btn').addEventListener('click', () => {
-    window.location.href = `/add.html?edit=${propertyId}`;
+    window.location.href = `/calculator.html?id=${propertyId}`;
   });
 
   document.getElementById('quick-form').addEventListener('submit', async (e) => {

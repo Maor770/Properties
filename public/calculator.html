@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מחשבון רכישת בניין | Building Calculator</title>
+<title>Building Purchase Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1985,7 +1985,7 @@ footer {
 <div class="toolbar">
   <button class="tool-btn secondary" id="btn-properties" data-i18n="btn_properties">נכסים</button>
   <button class="tool-btn secondary" id="btn-new" data-i18n="btn_new">נכס חדש</button>
-  <button class="tool-btn secondary" id="btn-lang">EN</button>
+  <button class="tool-btn secondary" id="btn-lang" style="display:none;">EN</button>
   <button class="tool-btn" id="btn-pdf" data-i18n="btn_pdf">ייצא PDF</button>
 </div>
 
@@ -2841,7 +2841,7 @@ const translations = {
   }
 };
 
-let currentLang = 'he';
+let currentLang = 'en';
 const $ = (id) => document.getElementById(id);
 
 function applyLanguage(lang) {
@@ -3179,7 +3179,7 @@ const FIELD_NAMES = ['price','units','rent','basement','taxes','insurance','wate
                      'vacancy','mgmt','repairs','reserves','rate','amort','dscr',
                      'maxltv','address'];
 
-let propertiesData = { currentId: null, properties: {}, lang: 'he' };
+let propertiesData = { currentId: null, properties: {}, lang: 'en' };
 
 function generatePropertyId() {
   return 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
@@ -3486,12 +3486,8 @@ if (currentProp && currentProp.data) {
   applyInputs(currentProp.data);
 }
 
-// Apply saved language
-if (propertiesData.lang && propertiesData.lang !== currentLang) {
-  applyLanguage(propertiesData.lang);
-}
-
-render();
+// Force English UI (Hub is English-only)
+applyLanguage('en');
 
 $('btn-pdf').addEventListener('click', async () => {
   const btn = $('btn-pdf');
@@ -5591,40 +5587,136 @@ setTimeout(() => {
 </script>
 
 <script>
-(async function () {
-  try {
-    const id = new URL(window.location.href).searchParams.get('id');
-    if (!id) return;
-    const res = await fetch('/api/properties/' + encodeURIComponent(id));
-    if (!res.ok) return;
+(function () {
+  const id = new URL(window.location.href).searchParams.get('id');
+  if (!id) return;
+
+  const HUB_API = '/api/properties/' + encodeURIComponent(id);
+  const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
+  let existingEnrichment = {};
+  let saveTimer = null;
+  let saving = false;
+  let loaded = false;
+
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#1A2332;color:#fff;padding:10px 20px;text-align:center;font-family:Arial,sans-serif;direction:ltr;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;';
+  banner.innerHTML = '<a href="/properties.html" style="color:#fff;text-decoration:underline;">← All properties</a><span style="opacity:.4;">|</span><a href="/property.html?id=' + id + '" style="color:#fff;text-decoration:underline;">Property summary &amp; files</a><span style="opacity:.4;">|</span><span id="hub-save-status">Loading…</span>';
+  document.body.insertBefore(banner, document.body.firstChild);
+  const statusEl = document.getElementById('hub-save-status');
+  const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg; };
+
+  function setVal(elemId, val) {
+    if (val === null || val === undefined || val === '') return;
+    const el = document.getElementById(elemId);
+    if (el && el.value !== String(val)) el.value = val;
+  }
+
+  async function loadProperty() {
+    setStatus('Loading…');
+    const res = await fetch(HUB_API);
+    if (!res.ok) { setStatus('Load failed'); return; }
     const { property } = await res.json();
-    if (!property) return;
+    if (!property) { setStatus('Not found'); return; }
 
-    const set = (sel, val) => {
-      if (val === null || val === undefined || val === '') return;
-      const el = document.getElementById(sel);
-      if (el) {
-        el.value = val;
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    };
+    if (property.enrichment_json) {
+      try { existingEnrichment = JSON.parse(property.enrichment_json) || {}; } catch (_) { existingEnrichment = {}; }
+    }
 
-    set('address', property.address);
-    set('units', property.units);
-    set('price', property.asking_price);
+    setVal('address', property.address);
+    setVal('units', property.units);
+    setVal('price', property.asking_price);
 
-    const banner = document.createElement('div');
-    banner.style.cssText = 'background:#1A2332;color:#fff;padding:10px 20px;text-align:center;font-family:Arial,sans-serif;direction:ltr;';
-    banner.innerHTML = '<a href="/property.html?id=' + id + '" style="color:#fff;text-decoration:underline;">← Back to property</a> &nbsp;|&nbsp; Pre-filled from Properties Hub';
-    document.body.insertBefore(banner, document.body.firstChild);
+    const calc = existingEnrichment.calculator || {};
+    CALC_FIELDS.forEach(k => setVal(k, calc[k]));
+
+    if (typeof render === 'function') {
+      try { render(); } catch (_) {}
+    }
 
     if (property.bbl && typeof loadCityData === 'function') {
       try { loadCityData(property.bbl, null); } catch (_) {}
     }
-  } catch (e) {
-    console.warn('Hub prefill failed:', e);
+
+    loaded = true;
+    setStatus('Saved');
+
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', scheduleSave);
+      el.addEventListener('change', scheduleSave);
+    });
   }
+
+  function scheduleSave() {
+    if (!loaded) return;
+    clearTimeout(saveTimer);
+    setStatus('Saving…');
+    saveTimer = setTimeout(saveToHub, 700);
+  }
+
+  async function saveToHub() {
+    if (saving) { scheduleSave(); return; }
+    saving = true;
+    try {
+      const addrEl = document.getElementById('address');
+      const addr = (addrEl && addrEl.value || '').trim();
+      if (!addr) { setStatus('Address required'); saving = false; return; }
+
+      const calcInputs = {};
+      CALC_FIELDS.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) calcInputs[k] = el.value;
+      });
+
+      let r = null, mine = null;
+      try {
+        if (typeof calculate === 'function') r = calculate();
+        if (r && typeof calculateMyPrice === 'function') mine = calculateMyPrice(r);
+      } catch (_) {}
+
+      const payload = {
+        address: addr,
+        units: calcInputs.units ? parseInt(calcInputs.units, 10) : null,
+        asking_price: calcInputs.price ? parseFloat(calcInputs.price) : null,
+      };
+      if (r) {
+        if (isFinite(r.noi)) payload.annual_noi = Math.round(r.noi);
+        if (isFinite(r.cashFlow)) payload.annual_cash_flow = Math.round(r.cashFlow);
+        if (isFinite(r.coc)) payload.coc_return = +r.coc.toFixed(2);
+        const annualDebt = r.annualDebt || 0;
+        if (annualDebt > 0) {
+          const actualDSCR = r.noi / annualDebt;
+          if (isFinite(actualDSCR)) payload.dscr = +actualDSCR.toFixed(3);
+        }
+      }
+      if (mine && isFinite(mine.price)) payload.my_max_price = Math.round(mine.price);
+
+      payload.enrichment_json = JSON.stringify({ ...existingEnrichment, calculator: calcInputs });
+
+      const res = await fetch(HUB_API, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        setStatus('Save failed');
+        console.warn('Hub save failed:', err);
+      } else {
+        const { property: updated } = await res.json().catch(() => ({}));
+        if (updated && updated.enrichment_json) {
+          try { existingEnrichment = JSON.parse(updated.enrichment_json) || {}; } catch (_) {}
+        }
+        setStatus('Saved · ' + new Date().toLocaleTimeString());
+      }
+    } catch (e) {
+      setStatus('Save error');
+      console.warn(e);
+    } finally {
+      saving = false;
+    }
+  }
+
+  loadProperty().catch(e => { setStatus('Load error'); console.warn(e); });
 })();
 </script>
 
