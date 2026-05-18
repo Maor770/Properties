@@ -5359,9 +5359,12 @@ function checkTaxMismatch(cityTaxes) {
   }
   const diff = Math.abs(inputTaxes - cityTaxes);
   const pct = (diff / cityTaxes) * 100;
-  
-  // Only warn if 10%+ off and was not just auto-filled
-  if (pct >= 10 && Math.abs(inputTaxes - cityTaxes) >= 500) {
+
+  // The PLUTO estimate is an upper bound (uses uncapped assessed value).
+  // Only warn when the user's entered tax is HIGHER than the PLUTO estimate —
+  // that's the case that suggests a typo. If user enters less than the PLUTO
+  // estimate, that's the normal case (NYC's transitional cap makes real tax lower).
+  if (inputTaxes > cityTaxes && pct >= 10 && diff >= 500) {
     const msg = t.nyc_tax_mismatch
       .replace('XINPUTX', fmtCommas(inputTaxes))
       .replace('XCITYX', fmtCommas(cityTaxes))
@@ -5998,6 +6001,12 @@ footer {
 (function () {
   let propertyId = new URL(window.location.href).searchParams.get('id');
   const isNew = !propertyId;
+
+  // When loading from Hub, ignore the calc's previously-cached internal property
+  // so we don't restore the previous building's NYC info / BBL.
+  if (propertyId && typeof propertiesData === 'object' && propertiesData) {
+    propertiesData.currentId = null;
+  }
   const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
   let existingEnrichment = {};
   let saveTimer = null;
@@ -6095,7 +6104,10 @@ footer {
       try { render(); } catch (_) {}
     }
 
-    if (property.bbl && typeof loadCityData === 'function') {
+    // Trigger a fresh NYC lookup so the address/BBL/PLUTO data match the loaded property
+    if (property.address && typeof lookupNYCAddress === 'function') {
+      try { lookupNYCAddress(property.address); } catch (_) {}
+    } else if (property.bbl && typeof loadCityData === 'function') {
       try { loadCityData(property.bbl, null); } catch (_) {}
     }
     setStatus('Saved');
