@@ -6188,6 +6188,25 @@ footer {
 }
 .hub-bar a { color: #cbd6ec; text-decoration: none; }
 .hub-bar a:hover { color: #fff; text-decoration: underline; }
+.hub-save-btn {
+  background: #2d6cdf;
+  color: #fff;
+  border: 1px solid #2d6cdf;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+}
+.hub-save-btn:disabled {
+  background: #3a4863;
+  border-color: #3a4863;
+  color: #8a94a8;
+  cursor: not-allowed;
+}
+.hub-save-btn.is-dirty { background: #d96b00; border-color: #d96b00; }
+.hub-save-btn.is-dirty:hover { background: #ba5b00; }
 
 /* Modal styling (saved properties modal etc.) */
 .modal-overlay { background: rgba(15,22,35,0.55); }
@@ -6214,7 +6233,6 @@ footer {
   }
   const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','other','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
   let existingEnrichment = {};
-  let saveTimer = null;
   let saving = false;
   let ready = false;
 
@@ -6238,7 +6256,8 @@ footer {
       ? '<a href="/property.html?id=' + propertyId + '">Property summary &amp; files</a><span style="opacity:.4;">|</span>'
       : '';
     banner.innerHTML = summary +
-      '<span id="hub-save-status">' + (propertyId ? 'Loading…' : 'New property — enter an address to save') + '</span>';
+      '<span id="hub-save-status">' + (propertyId ? 'Loading…' : 'New property — enter an address to save') + '</span>' +
+      '<button id="hub-save-btn" class="hub-save-btn" type="button" disabled>Save</button>';
   }
   renderBanner();
   topbar.insertAdjacentElement('afterend', banner);
@@ -6322,27 +6341,41 @@ footer {
     return true;
   }
 
+  let dirty = false;
+  function markDirty() {
+    if (!ready) return;
+    dirty = true;
+    setStatus('Unsaved changes');
+    const btn = document.getElementById('hub-save-btn');
+    if (btn) { btn.disabled = false; btn.classList.add('is-dirty'); }
+  }
+  function markClean(msg) {
+    dirty = false;
+    setStatus(msg || 'Saved');
+    const btn = document.getElementById('hub-save-btn');
+    if (btn) { btn.disabled = true; btn.classList.remove('is-dirty'); }
+  }
+
   function attachListeners() {
     document.querySelectorAll('input, select, textarea').forEach(el => {
-      el.addEventListener('input', scheduleSave);
-      el.addEventListener('change', scheduleSave);
+      el.addEventListener('input', markDirty);
+      el.addEventListener('change', markDirty);
+    });
+    const btn = document.getElementById('hub-save-btn');
+    if (btn) btn.addEventListener('click', () => { syncToHub(); });
+    window.addEventListener('beforeunload', (e) => {
+      if (dirty) { e.preventDefault(); e.returnValue = ''; }
     });
     ready = true;
   }
 
-  function scheduleSave() {
-    if (!ready) return;
-    clearTimeout(saveTimer);
-    setStatus('Saving…');
-    saveTimer = setTimeout(syncToHub, 700);
-  }
-
   async function syncToHub() {
-    if (saving) { scheduleSave(); return; }
+    if (saving) return;
     const payload = buildPayload();
     if (!payload) { setStatus('Enter an address to save'); return; }
 
     saving = true;
+    setStatus('Saving…');
     try {
       let res, created;
       if (!propertyId) {
@@ -6367,7 +6400,7 @@ footer {
         if (created.enrichment_json) {
           try { existingEnrichment = JSON.parse(created.enrichment_json) || {}; } catch (_) {}
         }
-        setStatus('Saved · ' + new Date().toLocaleTimeString());
+        markClean('Saved · ' + new Date().toLocaleTimeString());
       } else {
         // Subsequent saves -> UPDATE
         res = await fetch('/api/properties/' + encodeURIComponent(propertyId), {
@@ -6385,7 +6418,7 @@ footer {
         if (updated && updated.enrichment_json) {
           try { existingEnrichment = JSON.parse(updated.enrichment_json) || {}; } catch (_) {}
         }
-        setStatus('Saved · ' + new Date().toLocaleTimeString());
+        markClean('Saved · ' + new Date().toLocaleTimeString());
       }
     } catch (e) {
       setStatus('Save error');
