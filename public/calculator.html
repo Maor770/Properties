@@ -5997,35 +5997,51 @@ footer {
   grid-column: 1 / -1 !important;
 }
 
-/* Bottom action row: NPV import + "Show more details" + source links all in ONE flex line */
+/* Bottom action row: NPV import + "Show more details" + source links — single flex line, uniform size */
 .nyc-actions-row {
   grid-column: 1 / -1 !important;
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 8px !important;
-  padding-top: 8px !important;
+  gap: 6px !important;
+  padding-top: 6px !important;
   border-top: 1px solid var(--border) !important;
-  margin-top: 4px !important;
+  margin-top: 2px !important;
 }
 .nyc-actions-row #nyc-npv-import {
-  flex: 0 1 auto !important;
+  flex: 0 0 auto !important;
   margin: 0 !important;
-  min-width: 240px !important;
+  min-width: 0 !important;
+  background: #fff !important;
+}
+.nyc-actions-row #nyc-npv-import .nyc-npv-import-header {
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  gap: 6px !important;
 }
 .nyc-actions-row #nyc-expand-btn {
   flex: 0 0 auto !important;
   margin: 0 !important;
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
 }
 .nyc-actions-row .nyc-info-links {
-  flex: 1 1 auto !important;
+  flex: 0 0 auto !important;
   display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 6px !important;
-  justify-content: flex-end !important;
+  gap: 4px !important;
+  margin-left: auto !important;
   border: none !important;
   padding: 0 !important;
-  margin: 0 !important;
+}
+.nyc-actions-row .nyc-info-links .nyc-link {
+  padding: 5px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: Arial, "Helvetica Neue", sans-serif !important;
+  letter-spacing: 0 !important;
 }
 .nyc-info-links .nyc-link {
   padding: 5px 10px !important;
