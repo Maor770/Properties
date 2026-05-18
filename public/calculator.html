@@ -2766,7 +2766,7 @@ const translations = {
     nyc_zoning: "Zoning",
     nyc_bldgarea: "Building Area",
     nyc_lotarea: "Lot Area",
-    nyc_taxes: "Annual Taxes",
+    nyc_taxes: "Est. Taxes (PLUTO)",
     nyc_section_details: "Property Details",
     nyc_section_sales: "Sales History",
     nyc_section_violations: "Open Violations",
@@ -5926,6 +5926,49 @@ footer {
 .nyc-info-label { color: var(--ink-muted); font-weight: 500; }
 .nyc-info-value { color: var(--ink); font-weight: 600; }
 
+/* Collapse the NPV import box — show as a thin toggle, expand on click */
+#nyc-npv-import {
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: #fafbfd !important;
+  padding: 0 !important;
+  margin: 10px 0 !important;
+}
+#nyc-npv-import .nyc-npv-import-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  font-family: Arial, sans-serif !important;
+}
+#nyc-npv-import .nyc-npv-import-header::before {
+  content: "📄";
+  font-size: 14px;
+}
+#nyc-npv-import .nyc-npv-import-header::after {
+  content: "▾";
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--ink-muted);
+  transition: transform 0.15s ease;
+}
+#nyc-npv-import.expanded .nyc-npv-import-header::after {
+  transform: rotate(180deg);
+}
+#nyc-npv-import .nyc-npv-import-body {
+  display: none !important;
+  padding: 4px 14px 14px !important;
+  border-top: 1px solid var(--border);
+}
+#nyc-npv-import.expanded .nyc-npv-import-body {
+  display: block !important;
+}
+
 /* Save status bar (the bar we inject) */
 .hub-bar {
   background: #1A2332; color: #fff;
@@ -6131,6 +6174,15 @@ footer {
       saving = false;
     }
   }
+
+  // Collapse/expand NPV import box on header click
+  document.addEventListener('click', (e) => {
+    const header = e.target.closest('#nyc-npv-import .nyc-npv-import-header');
+    if (!header) return;
+    if (e.target.closest('a, button, label, input')) return;
+    const box = document.getElementById('nyc-npv-import');
+    if (box) box.classList.toggle('expanded');
+  });
 
   (async () => {
     if (propertyId) {
