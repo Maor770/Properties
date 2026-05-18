@@ -43,7 +43,7 @@ function render() {
     return true;
   });
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="19" class="empty">No properties match.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="20" class="empty">No properties match.</td></tr>`;
     return;
   }
   tbody.innerHTML = filtered.map(row).join('');
@@ -59,6 +59,7 @@ function row(p) {
     <tr>
       <td><span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span></td>
       <td><a href="/property.html?id=${p.id}" title="${escapeHtml(p.address)}">${escapeHtml(fmtAddress(p.address))}</a></td>
+      <td class="between">${escapeHtml(p.cross_streets || '–')}</td>
       <td>${escapeHtml(p.next_step || '')}</td>
       <td class="num">${fmtCurrency(p.my_max_price)}</td>
       <td class="num">${fmtCurrency(p.asking_price)}</td>

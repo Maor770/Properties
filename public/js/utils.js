@@ -10,27 +10,21 @@ export const FILE_CATEGORIES = [
   { value: 'other', label: 'Other' },
 ];
 
-// Normalize address for display: strip ", USA" suffix and title-case all-caps words
-// (GeoSearch returns "1277 LINCOLN PLACE, Brooklyn, NY, USA" -> "1277 Lincoln Place, Brooklyn, NY")
+// Short address for cards/tables: just "<number> <street name>", title-cased.
+// Strips borough, state, zip and ", USA" suffix.
 export function fmtAddress(addr) {
   if (!addr) return '';
-  return String(addr)
-    .replace(/,?\s*USA\s*$/i, '')
-    .replace(/\s+,/g, ',')
-    .split(/(\s+|,)/)
-    .map(part => {
-      if (!part || /^\s+$/.test(part) || part === ',') return part;
-      // Keep 2-letter all-caps tokens (state codes like NY, NJ)
-      if (/^[A-Z]{2}$/.test(part)) return part;
-      // Keep tokens that start with a digit (street numbers, zip codes)
-      if (/^\d/.test(part)) return part;
-      // Title-case only all-uppercase tokens (GeoSearch output); leave mixed-case alone
-      if (/^[A-Z]{2,}$/.test(part)) {
-        return part.charAt(0) + part.slice(1).toLowerCase();
-      }
-      return part;
-    })
-    .join('');
+  // First comma-separated chunk is "<number> <street>"
+  const first = String(addr).split(',')[0].trim();
+  return first.split(/\s+/).map(w => {
+    if (!w) return w;
+    if (/^\d/.test(w)) return w;                    // street number, zip
+    if (/^[A-Z]{2}$/.test(w)) return w;             // state abbreviations
+    if (/^[A-Z]{2,}$/.test(w)) {                    // all-caps token from GeoSearch
+      return w.charAt(0) + w.slice(1).toLowerCase();
+    }
+    return w;
+  }).join(' ');
 }
 
 export function fmtCurrency(v) {

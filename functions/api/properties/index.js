@@ -44,6 +44,13 @@ export async function onRequestGet({ env, request }) {
 
   for (const r of results) {
     r.gap_pct = computeGapPct(r.asking_price, r.my_max_price);
+    // Surface enrichment_json.cross_streets as a top-level field for the table
+    try {
+      const enrich = r.enrichment_json ? JSON.parse(r.enrichment_json) : null;
+      r.cross_streets = (enrich && enrich.cross_streets) || null;
+    } catch (_) {
+      r.cross_streets = null;
+    }
   }
   return jsonResponse({ properties: results });
 }
