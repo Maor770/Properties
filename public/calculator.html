@@ -6252,10 +6252,13 @@ footer {
   const banner = document.createElement('div');
   banner.className = 'hub-bar';
   function renderBanner() {
+    const ref = propertyId
+      ? '<span class="prop-ref" style="background:#fff;color:#1A2332;">#' + propertyId + '</span>'
+      : '';
     const summary = propertyId
       ? '<a href="/property.html?id=' + propertyId + '">Property summary &amp; files</a><span style="opacity:.4;">|</span>'
       : '';
-    banner.innerHTML = summary +
+    banner.innerHTML = ref + summary +
       '<span id="hub-save-status">' + (propertyId ? 'Loading…' : 'New property — enter an address to save') + '</span>' +
       '<button id="hub-save-btn" class="hub-save-btn" type="button" disabled>Save</button>';
   }
