@@ -121,7 +121,14 @@ table.props th {
   position: sticky; top: 0;
 }
 table.props tbody tr:hover { background: #f8faff; }
-table.props td.notes { white-space: normal; max-width: 280px; }
+table.props td.notes {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  color: var(--muted);
+  font-size: 12px;
+}
 table.props td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 .badge {

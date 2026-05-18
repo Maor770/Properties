@@ -1,5 +1,5 @@
 import { api } from './api.js';
-import { mountTopbar, fmtCurrency, fmtRatio, fmtNumber, statusClass, stabClass, escapeHtml, STATUSES, BOROUGHS, toast } from './utils.js';
+import { mountTopbar, fmtCurrency, fmtRatio, fmtNumber, fmtAddress, statusClass, stabClass, escapeHtml, STATUSES, BOROUGHS, toast } from './utils.js';
 
 mountTopbar('properties');
 
@@ -58,7 +58,7 @@ function row(p) {
   return `
     <tr>
       <td><span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span></td>
-      <td><a href="/property.html?id=${p.id}">${escapeHtml(p.address)}</a></td>
+      <td><a href="/property.html?id=${p.id}" title="${escapeHtml(p.address)}">${escapeHtml(fmtAddress(p.address))}</a></td>
       <td>${escapeHtml(p.next_step || '')}</td>
       <td class="num">${fmtCurrency(p.my_max_price)}</td>
       <td class="num">${fmtCurrency(p.asking_price)}</td>
@@ -73,7 +73,7 @@ function row(p) {
       <td>${escapeHtml(p.borough || '')}</td>
       <td class="num">${p.year_built ?? '-'}</td>
       <td class="num">${fmtCurrency(p.last_offer)}</td>
-      <td class="notes">${escapeHtml(p.notes || '')}</td>
+      <td class="notes" title="${escapeHtml(p.notes || '')}">${escapeHtml(p.notes || '')}</td>
       <td>${escapeHtml(p.last_updated || '')}</td>
       <td>${filesCell}</td>
     </tr>

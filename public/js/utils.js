@@ -10,6 +10,29 @@ export const FILE_CATEGORIES = [
   { value: 'other', label: 'Other' },
 ];
 
+// Normalize address for display: strip ", USA" suffix and title-case all-caps words
+// (GeoSearch returns "1277 LINCOLN PLACE, Brooklyn, NY, USA" -> "1277 Lincoln Place, Brooklyn, NY")
+export function fmtAddress(addr) {
+  if (!addr) return '';
+  return String(addr)
+    .replace(/,?\s*USA\s*$/i, '')
+    .replace(/\s+,/g, ',')
+    .split(/(\s+|,)/)
+    .map(part => {
+      if (!part || /^\s+$/.test(part) || part === ',') return part;
+      // Keep 2-letter all-caps tokens (state codes like NY, NJ)
+      if (/^[A-Z]{2}$/.test(part)) return part;
+      // Keep tokens that start with a digit (street numbers, zip codes)
+      if (/^\d/.test(part)) return part;
+      // Title-case only all-uppercase tokens (GeoSearch output); leave mixed-case alone
+      if (/^[A-Z]{2,}$/.test(part)) {
+        return part.charAt(0) + part.slice(1).toLowerCase();
+      }
+      return part;
+    })
+    .join('');
+}
+
 export function fmtCurrency(v) {
   if (v === null || v === undefined || v === '') return '-';
   const n = Number(v);

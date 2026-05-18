@@ -1,5 +1,5 @@
 import { api } from './api.js';
-import { mountTopbar, fmtCurrency, fmtPct, fmtRatio, fmtNumber, statusClass, stabClass, escapeHtml, STATUSES, BOROUGHS, toast } from './utils.js';
+import { mountTopbar, fmtCurrency, fmtPct, fmtRatio, fmtNumber, fmtAddress, statusClass, stabClass, escapeHtml, STATUSES, BOROUGHS, toast } from './utils.js';
 
 mountTopbar('dashboard');
 
@@ -87,7 +87,7 @@ function propCard(p) {
     <div class="prop-card">
       <div class="card-head">
         <div class="card-title">
-          <h3>${escapeHtml(p.address)}</h3>
+          <h3 title="${escapeHtml(p.address)}">${escapeHtml(fmtAddress(p.address))}</h3>
           ${subtitle ? `<div class="card-sub">${escapeHtml(subtitle)}</div>` : ''}
         </div>
         <span class="badge ${statusClass(p.status)}">${escapeHtml(p.status)}</span>
