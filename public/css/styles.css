@@ -141,11 +141,15 @@ table.props td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .badge.status-negotiating { background: var(--orange); }
 .badge.status-passed { background: var(--red); }
 
-.badge.stab-confirmed { background: #1f8a3d; }
-.badge.stab-likely { background: #d96b00; }
-.badge.stab-possible { background: #d9a300; color: #1f1500; }
-.badge.stab-no { background: #6b7480; }
-.badge.stab-unknown { background: #aab1bd; color: #1f1500; }
+/* Rent-stab semantics from the buyer's perspective:
+   No (not stabilized) is GOOD -> soft green
+   Confirmed/Likely/Possible (stabilized) is BAD -> shades of soft red
+   Not Checked / unknown -> neutral gray */
+.badge.stab-confirmed { background: #f4cccc; color: #8b2118; }
+.badge.stab-likely    { background: #f9d6c4; color: #8b3f18; }
+.badge.stab-possible  { background: #fbe5b6; color: #6a4a00; }
+.badge.stab-no        { background: #d6ead9; color: #1f6b34; }
+.badge.stab-unknown   { background: #e3e6ee; color: #4a5260; }
 
 .cards-grid {
   display: grid;

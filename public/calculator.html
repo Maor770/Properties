@@ -2242,6 +2242,13 @@ footer {
     </div>
   </div>
   <div class="input-row">
+    <label><span data-i18n="lbl_other">Other OpEx</span><span class="hint" data-i18n="hint_annual">annual</span></label>
+    <div class="suffix-wrap">
+      <span class="suffix">$</span>
+      <input type="number" id="other" value="0">
+    </div>
+  </div>
+  <div class="input-row">
     <label data-i18n="lbl_vacancy">וויקנסי</label>
     <div class="suffix-wrap">
       <input type="number" id="vacancy" value="5" step="0.5">
@@ -2517,6 +2524,7 @@ const translations = {
     hint_annual: "שנתי",
     lbl_insurance: "ביטוח",
     lbl_water: "מים וביוב",
+    lbl_other: "הוצאות אחרות (דלק, חשמל, סופר וכו')",
     lbl_vacancy: "וויקנסי",
     lbl_mgmt: "ניהול",
     hint_pct_income: "% מהכנסה",
@@ -2699,6 +2707,7 @@ const translations = {
     hint_annual: "annual",
     lbl_insurance: "Insurance",
     lbl_water: "Water & Sewer",
+    lbl_other: "Other OpEx (fuel, electric, super, etc.)",
     lbl_vacancy: "Vacancy",
     lbl_mgmt: "Management",
     hint_pct_income: "% of income",
@@ -2880,6 +2889,7 @@ function getInputs() {
     taxes: +$('taxes').value || 0,
     insurance: +$('insurance').value || 0,
     water: +$('water').value || 0,
+    other: +$('other').value || 0,
     vacancy: (+$('vacancy').value || 0) / 100,
     mgmt: (+$('mgmt').value || 0) / 100,
     repairs: (+$('repairs').value || 0) / 100,
@@ -2909,7 +2919,7 @@ function calculate(overrides = {}) {
   const mgmtCost = egi * i.mgmt;
   const repairsCost = egi * i.repairs;
   const reservesCost = i.units * i.reserves;
-  const opex = i.taxes + i.insurance + i.water + mgmtCost + repairsCost + reservesCost;
+  const opex = i.taxes + i.insurance + i.water + i.other + mgmtCost + repairsCost + reservesCost;
   
   const noi = egi - opex;
   
@@ -3165,6 +3175,7 @@ const DEFAULT_VALUES = {
   taxes: '17000',
   insurance: '12000',
   water: '5000',
+  other: '0',
   vacancy: '5',
   mgmt: '5',
   repairs: '5',
@@ -6164,7 +6175,7 @@ footer {
   if (propertyId && typeof propertiesData === 'object' && propertiesData) {
     propertiesData.currentId = null;
   }
-  const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
+  const CALC_FIELDS = ['price','units','rent','basement','taxes','insurance','water','other','vacancy','mgmt','repairs','reserves','rate','amort','dscr','maxltv'];
   let existingEnrichment = {};
   let saveTimer = null;
   let saving = false;
